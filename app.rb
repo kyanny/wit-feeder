@@ -12,6 +12,7 @@ def link(path)
 end
 
 def _open(url)
+  sleep 1.0
   open(url, { 'User-Agent' => USER_AGENT })
 end
 
