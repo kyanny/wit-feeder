@@ -1,6 +1,7 @@
 require 'open-uri'
 require 'nokogiri'
 require 'rss'
+require 'aws-sdk'
 
 VERSION = '0.0.1'
 HOST= 'wit.flakiness.es'
@@ -39,4 +40,12 @@ rss = RSS::Maker.make('atom') do |maker|
   end
 end
 
-puts rss
+AWS.config({
+    access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+    secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+  })
+
+s3 = AWS::S3.new
+bucket = s3.buckets['kyanny']
+object = bucket.objects.create('wit.rss', rss.to_s)
+object.acl = :public_read
